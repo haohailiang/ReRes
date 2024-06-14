@@ -67,3 +67,9 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
 getLocalStorage();
 window.addEventListener('storage', getLocalStorage, false);
 
+chrome.browserAction.onClicked.addListener(openDemoTab);
+
+function openDemoTab() {
+    chrome.tabs.create({ url: 'options.html' });
+}
+
