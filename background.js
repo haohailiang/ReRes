@@ -14,6 +14,7 @@ var typeMap = {
 
 function getLocalStorage() {
     ReResMap = window.localStorage.ReResMap ? JSON.parse(window.localStorage.ReResMap) : ReResMap;
+    console.log(ReResMap)
 }
 
 function getLocalFileUrl(url) {

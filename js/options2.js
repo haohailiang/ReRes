@@ -113,6 +113,25 @@ const app = createApp({
             });
             return proxyTreeList;
         },
+        saveData() {
+            let result = [];
+            this.proxyTreeList.forEach(({ reqTableData, resTableData }) => {
+                reqTableData.forEach(reqItem => {
+                    let { checked: reqChecked, req } = reqItem;
+                    resTableData.forEach(resItem => {
+                        let { checked: resChecked, res } = resItem;
+                        result.push({
+                            req,
+                            res,
+                            checked: reqChecked && resChecked
+                        })
+                    });
+                })
+            });
+
+            var bg = chrome.extension.getBackgroundPage();
+            bg.localStorage.ReResMap = JSON.stringify(result);
+        },
         handleImport(evt) {
             let resultFile = evt.target.files[0];
             if (resultFile) {
@@ -127,7 +146,7 @@ const app = createApp({
                         // for (let i = 0, len = data.length; i < len; i++) {
                         //     $scope.maps.push(data[i]);
                         // }
-                        // saveData();
+                        this.saveData();
                         // location.reload();
                     } catch (e) {
                         console.log(e)
