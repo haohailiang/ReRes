@@ -14,5 +14,21 @@
                 "checked": true
             }
         ]
+    },
+    {
+        "req": [
+            {
+                "url": "http://192.168.3.2:8080/11.json",
+                "desc": "desc-1",
+                "checked": true
+            }
+        ],
+        "res": [
+            {
+                "url": "http://192.168.3.2:8080/22.json",
+                "desc": "desc-3",
+                "checked": true
+            }
+        ]
     }
 ]

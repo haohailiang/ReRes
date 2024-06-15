@@ -73,6 +73,11 @@ const app = createApp({
             }
         }
     },
+    created() {
+        var bg = chrome.extension.getBackgroundPage();
+        // bg.localStorage.ReResMap;
+        this.proxyTreeList = JSON.parse(bg.localStorage.ReResMapFormat);
+    },
     mounted() {
         document.getElementById('jsonFile1').onchange = this.handleImport;
         if (this.proxyTreeList.length === 0) {
@@ -80,13 +85,16 @@ const app = createApp({
         }
     },
     watch: {
-        // 每当 question 改变时，这个函数就会执行
-        proxyTreeList(newVal) {
-            if (newVal.length === 0) {
-                document.getElementById('jsonFile2').addEventListener('change', this.handleImport);
-            } else {
-                document.getElementById('jsonFile2')?.removeEventListener('change', this.handleImport);
-            }
+        proxyTreeList: {
+            handler(newVal) {
+                if (newVal.length === 0) {
+                    document.getElementById('jsonFile2').addEventListener('change', this.handleImport);
+                } else {
+                    document.getElementById('jsonFile2')?.removeEventListener('change', this.handleImport);
+                }
+                this.saveData();
+            },
+            deep: true
         },
         activeReqResTable: {
             handler(newVal) {
@@ -166,6 +174,23 @@ const app = createApp({
             });
             return proxyTreeList;
         },
+        formateExportData(proxyTreeList) {
+            let exportData = proxyTreeList.map(proxyTreeItem => {
+                let { reqTableData, resTableData } = proxyTreeItem;
+                let req = reqTableData.map(item => ({
+                    url: item.req,
+                    desc: item.desc,
+                    checked: item.checked,
+                }));
+                let res = resTableData.map(item => ({
+                    url: item.res,
+                    desc: item.desc,
+                    checked: item.checked,
+                }));
+                return { req, res };
+            });
+            return exportData;
+        },
         saveData() {
             let result = [];
             this.proxyTreeList.forEach(({ reqTableData, resTableData }) => {
@@ -182,8 +207,9 @@ const app = createApp({
                 })
             });
 
-            // var bg = chrome.extension.getBackgroundPage();
-            // bg.localStorage.ReResMap = JSON.stringify(result);
+            var bg = chrome.extension.getBackgroundPage();
+            bg.localStorage.ReResMap = JSON.stringify(result);
+            bg.localStorage.ReResMapFormat = JSON.stringify(this.proxyTreeList);
         },
         handleImport(evt) {
             let resultFile = evt.target.files[0];
@@ -194,11 +220,6 @@ const app = createApp({
                     try {
                         let rawData = JSON.parse(e.target.result)
                         this.proxyTreeList = this.formateRawData(rawData);
-                        // let data = JSON.parse(this.result);
-                        // $scope.maps.length = 0;
-                        // for (let i = 0, len = data.length; i < len; i++) {
-                        //     $scope.maps.push(data[i]);
-                        // }
                         this.saveData();
                         // location.reload();
                     } catch (e) {
@@ -228,9 +249,8 @@ const app = createApp({
         },
         handleExport() {
             var URL = URL || webkitURL || window;
-            var bb = new Blob([JSON.stringify([
-                { a: 1 }
-            ], null, ' '.repeat(4))], { type: 'text/json' });
+            var exportData = this.formateExportData(this.proxyTreeList);
+            var bb = new Blob([JSON.stringify(exportData, null, ' '.repeat(4))], { type: 'text/json' });
             this.saveAs(bb, 'ReResSetting.json');
         },
         handleRowClick(proxyTreeIndex, reqResTable, rowData) {
