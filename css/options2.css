@@ -1,0 +1,88 @@
+html,
+body {
+    margin: 0;
+    height: 100%;
+}
+
+#app {
+    height: 100%;
+}
+
+#app .button-group {
+    display: flex;
+    gap: 12px;
+    justify-content: end;
+    box-sizing: border-box;
+    padding: 8px 12px;
+}
+
+#app .button-group .import-box {
+    position: relative;
+}
+
+#app .button-group .import-box .file {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+}
+
+#app .empty-box {
+    margin-top: -48px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app .empty-box .el-empty__bottom {
+    display: flex;
+    gap: 12px;
+}
+
+#app .empty-box .import-box {
+    position: relative;
+}
+#app .empty-box .file {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+}
+#app .rule-list-box {
+    padding: 0 12px;
+}
+#app .rule-list-box .req-url {
+    padding-bottom: 20px;
+}
+
+#app .checkbox-uncheck {
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    border: 2px solid lightgray;
+    border-radius: 50%;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+#app .checkbox-check {
+    color: #409eff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-color: #409eff;
+    font-size: 22px;
+}
+
+#app .el-drawer__body {
+    padding-top: 0;
+}
+
+#app .el-table .success-row {
+    --el-table-tr-bg-color: var(--el-color-success-light-9);
+}

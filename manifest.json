@@ -2,6 +2,7 @@
     "name": "ReRes",
     "version": "1.8.1",
     "description": "Change the response of the request. ReRes可以用来更改页面请求响应的内容。通过指定规则，您可以把请求映射到其他的url，也可以映射到本机的文件或者目录。ReRes支持单个url映射，也支持目录映射。",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "manifest_version": 2,
     "browser_action": {
         "default_icon": "icon.png",
@@ -9,11 +10,12 @@
     },
     "options_page": "options.html",
     "background": {
-        "scripts": ["background.js"],
+        "scripts": [
+            "background.js"
+        ],
         "persistent": true
     },
-    "icons":
-    {
+    "icons": {
         "16": "icon.png",
         "48": "icon48.png"
     },
@@ -24,5 +26,12 @@
         "<all_urls>",
         "unlimitedStorage"
     ],
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Alt+Shift+J"
+            }
+        }
+    },
     "update_url": "http://clients2.google.com/service/update2/crx"
-} 
+}

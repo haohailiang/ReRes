@@ -70,6 +70,6 @@ window.addEventListener('storage', getLocalStorage, false);
 chrome.browserAction.onClicked.addListener(openDemoTab);
 
 function openDemoTab() {
-    chrome.tabs.create({ url: 'options.html' });
+    chrome.tabs.create({ url: 'options2.html' });
 }
 
