@@ -1,0 +1,28 @@
+[
+    {
+        "req": [
+            {
+                "url": "req-1",
+                "desc": "desc-1",
+                "checked": false
+            },
+            {
+                "url": "req-2",
+                "desc": "desc-2",
+                "checked": true
+            }
+        ],
+        "res": [
+            {
+                "url": "res-1",
+                "desc": "desc-3",
+                "checked": false
+            },
+            {
+                "url": "res-2",
+                "desc": "desc-4",
+                "checked": false
+            }
+        ]
+    }
+]

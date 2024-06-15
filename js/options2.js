@@ -4,60 +4,60 @@ const app = createApp({
     data() {
         return {
             proxyTreeList: [
-                {
-                    reqTableData: [
-                        {
-                            index: 0,
-                            checked: true,
-                            desc: '清北大学1',
-                            req: 'Tom',
-                        },
-                        {
-                            index: 1,
-                            checked: false,
-                            desc: '清北大学2',
-                            req: 'Tom',
-                        },
-                        {
-                            index: 2,
-                            checked: false,
-                            desc: '清北大学3',
-                            req: 'Tom',
-                        },
-                        {
-                            index: 3,
-                            checked: false,
-                            desc: '清北大学4',
-                            req: 'Tom',
-                        },
-                    ],
-                    resTableData: [
-                        {
-                            index: 0,
-                            checked: true,
-                            desc: '清北大学a',
-                            res: 'Tom',
-                        },
-                        {
-                            index: 1,
-                            checked: false,
-                            desc: '清北大学b',
-                            res: 'Tom',
-                        },
-                        {
-                            index: 2,
-                            checked: false,
-                            desc: '清北大学c',
-                            res: 'Tom',
-                        },
-                        {
-                            index: 3,
-                            checked: false,
-                            desc: '清北大学d',
-                            res: 'Tom',
-                        },
-                    ],
-                }
+                // {
+                //     reqTableData: [
+                //         {
+                //             index: 0,
+                //             checked: true,
+                //             desc: '清北大学1',
+                //             req: 'Tom',
+                //         },
+                //         {
+                //             index: 1,
+                //             checked: false,
+                //             desc: '清北大学2',
+                //             req: 'Tom',
+                //         },
+                //         {
+                //             index: 2,
+                //             checked: false,
+                //             desc: '清北大学3',
+                //             req: 'Tom',
+                //         },
+                //         {
+                //             index: 3,
+                //             checked: false,
+                //             desc: '清北大学4',
+                //             req: 'Tom',
+                //         },
+                //     ],
+                //     resTableData: [
+                //         {
+                //             index: 0,
+                //             checked: true,
+                //             desc: '清北大学a',
+                //             res: 'Tom',
+                //         },
+                //         {
+                //             index: 1,
+                //             checked: false,
+                //             desc: '清北大学b',
+                //             res: 'Tom',
+                //         },
+                //         {
+                //             index: 2,
+                //             checked: false,
+                //             desc: '清北大学c',
+                //             res: 'Tom',
+                //         },
+                //         {
+                //             index: 3,
+                //             checked: false,
+                //             desc: '清北大学d',
+                //             res: 'Tom',
+                //         },
+                //     ],
+                // }
             ],
             activeProxytreeIndex: '',
             activeReqResTable: '',
@@ -94,6 +94,25 @@ const app = createApp({
     },
     methods: {
         // chrome://extensions/shortcuts 打开这个手动设个快捷键
+        formateRawData(rawData) {
+            let proxyTreeList = rawData.map(groupItem => {
+                let { req, res } = groupItem;
+                let reqTableData = req.map((reqItem, index) => ({
+                    index,
+                    checked: reqItem.checked,
+                    desc: reqItem.desc,
+                    req: reqItem.url,
+                }));
+                let resTableData = res.map((resItem, index) => ({
+                    index,
+                    checked: resItem.checked,
+                    desc: resItem.desc,
+                    res: resItem.url,
+                }));
+                return { reqTableData, resTableData };
+            });
+            return proxyTreeList;
+        },
         handleImport(evt) {
             let resultFile = evt.target.files[0];
             if (resultFile) {
@@ -101,9 +120,8 @@ const app = createApp({
                 reader.readAsText(resultFile);
                 reader.onload = e => {
                     try {
-                        let data = JSON.parse(e.target.result)
-                        this.proxyTreeList = data;
-                        console.log(data)
+                        let rawData = JSON.parse(e.target.result)
+                        this.proxyTreeList = this.formateRawData(rawData);
                         // let data = JSON.parse(this.result);
                         // $scope.maps.length = 0;
                         // for (let i = 0, len = data.length; i < len; i++) {
@@ -112,6 +130,7 @@ const app = createApp({
                         // saveData();
                         // location.reload();
                     } catch (e) {
+                        console.log(e)
                         alert("导入失败，请检查文件格式是否正确");
                     }
                 };
