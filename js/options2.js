@@ -323,6 +323,7 @@ const app = createApp({
             this.activeProxytreeIndex = proxyTreeIndex;
             this.activeReqResTable = reqResTable;
             this.activeTableIndex = tableIndex;
+            this.editForm.res = 'http://localhost:8090/';
         },
         handleBeforeClose() {
             this.submitEditForm();
