@@ -26,12 +26,5 @@
         "<all_urls>",
         "unlimitedStorage"
     ],
-    "commands": {
-        "_execute_action": {
-            "suggested_key": {
-                "default": "Alt+Shift+J"
-            }
-        }
-    },
     "update_url": "http://clients2.google.com/service/update2/crx"
 }

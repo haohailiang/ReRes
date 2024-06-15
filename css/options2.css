@@ -13,7 +13,7 @@ body {
     gap: 12px;
     justify-content: end;
     box-sizing: border-box;
-    padding: 8px 12px;
+    padding: 8px 16px;
 }
 
 #app .button-group .import-box {
@@ -54,12 +54,13 @@ body {
     opacity: 0;
 }
 #app .rule-list-item {
-    padding: 0 12px 0 0;
-    border-left: 4px solid #909399;
+    border-left: 4px solid rgb(144, 147, 153);
+    border-right: 4px solid #909399;
     display: flex;
+    margin: 0 12px;
 }
 #app .rule-list-item:nth-child(odd) {
-    border-color: #e6a23c;
+    border-color: rgb(230, 162, 60);
 }
 #app .rule-list-item .req-url {
     padding-bottom: 20px;
@@ -72,6 +73,11 @@ body {
     align-items: center;
     font-size: 20px;
     border-bottom: 1px solid #ebeef5;
+    background-color: rgba(144, 147, 153, 0.1);
+}
+
+#app .rule-list-item:nth-child(odd) .req-no {
+    background-color: #fff;
 }
 
 .rule-list-item:nth-child(2) .req-no {
