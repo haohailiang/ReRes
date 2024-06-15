@@ -64,14 +64,11 @@ const app = createApp({
             activeTableIndex: '',
             sliderDialogVisible: false,
             isAdd: false,
-            rules: {
-                reqRes: [
-                    { required: true, message: '必填', trigger: 'blur' },
-                ],
-            },
+            rules: {},
             editForm: {
                 desc: '',
-                reqRes: '',
+                // req: '',
+                // res: '',
                 checked: true,
             }
         }
@@ -90,10 +87,66 @@ const app = createApp({
             } else {
                 document.getElementById('jsonFile2')?.removeEventListener('change', this.handleImport);
             }
-        }
+        },
+        activeReqResTable: {
+            handler(newVal) {
+                if (!newVal) {
+                    this.rules = {
+                        req: [
+                            { required: true, message: '必填', trigger: 'blur' },
+                            { validator: this.checkIsExist, trigger: 'blur' }
+                        ],
+                        res: [
+                            { required: true, message: '必填', trigger: 'blur' },
+                            { validator: this.checkIsExist, trigger: 'blur' }
+                        ],
+                    };
+                    return;
+                }
+
+                if (newVal === 'reqTableData') {
+                    this.rules = {
+                        req: [
+                            { required: true, message: '必填', trigger: 'blur' },
+                            { validator: this.checkIsExist, trigger: 'blur' }
+                        ],
+                    };
+                    return;
+                }
+
+                this.rules = {
+                    res: [
+                        { required: true, message: '必填', trigger: 'blur' },
+                        { validator: this.checkIsExist, trigger: 'blur' }
+                    ],
+                };
+            },
+            // 强制立即执行回调
+            immediate: true
+        },
     },
     methods: {
         // chrome://extensions/shortcuts 打开这个手动设个快捷键
+        checkIsExist(rule, value, callback) {
+            for (let pi = 0; pi < this.proxyTreeList.length; pi++) {
+                if (rule.field === 'req') {
+                    for (let ti = 0; ti < this.proxyTreeList[pi].reqTableData.length; ti++) {
+                        if (this.proxyTreeList[pi].reqTableData[ti].req === value) {
+                            callback(new Error(`存在重复的请求路径: ${value}`));
+                            return;
+                        }
+                    }
+                } else {
+                    for (let ti = 0; ti < this.proxyTreeList[pi].resTableData.length; ti++) {
+                        if (this.proxyTreeList[pi].resTableData[ti].res === value) {
+                            callback(new Error(`存在重复的响应路径: ${value}`));
+                            return;
+                        }
+                    }
+                }
+            }
+            callback();
+        },
         formateRawData(rawData) {
             let proxyTreeList = rawData.map(groupItem => {
                 let { req, res } = groupItem;
@@ -129,8 +182,8 @@ const app = createApp({
                 })
             });
 
-            var bg = chrome.extension.getBackgroundPage();
-            bg.localStorage.ReResMap = JSON.stringify(result);
+            // var bg = chrome.extension.getBackgroundPage();
+            // bg.localStorage.ReResMap = JSON.stringify(result);
         },
         handleImport(evt) {
             let resultFile = evt.target.files[0];
@@ -207,20 +260,20 @@ const app = createApp({
             this.activeProxytreeIndex = proxyTreeIndex;
             this.activeReqResTable = reqResTable;
             this.activeTableIndex = tableIndex;
-            let reqRes;
-            let others1 = {};
-            if (reqResTable === 'reqTableData') {
-                reqRes = rowData.req;
-                let { req, ...others2 } = rowData;
-                others1 = others2;
-            } else {
-                reqRes = rowData.res;
-                let { res, ...others2 } = rowData;
-                others1 = others2;
-            }
 
-            this.editForm = others1;
-            this.editForm.reqRes = reqRes;
+            if (reqResTable === 'reqTableData') {
+                this.editForm = {
+                    desc: rowData.desc,
+                    req: rowData.req,
+                    checked: rowData.checked,
+                };
+            } else {
+                this.editForm = {
+                    desc: rowData.desc,
+                    res: rowData.res,
+                    checked: rowData.checked,
+                };
+            }
         },
         handleMoveUp({ proxyTreeIndex, reqResTable, tableIndex }) {
             let targetTable = this.proxyTreeList[proxyTreeIndex][reqResTable];
@@ -256,7 +309,6 @@ const app = createApp({
             this.activeTableIndex = '';
             this.editForm = {
                 desc: '',
-                reqRes: '',
                 checked: true,
             };
             this.sliderDialogVisible = false;
@@ -264,7 +316,7 @@ const app = createApp({
         },
         async submitEditForm() {
             let result = await new Promise((resolve, reject) => {
-                this.$refs.editFormRef[0].validate(valid => {
+                this.$refs.editFormRef.validate(valid => {
                     resolve(valid);
                 });
             })
@@ -274,18 +326,35 @@ const app = createApp({
             }
 
             let newRowIndex = this.activeTableIndex + 1;
-            if (this.activeReqResTable === 'reqTableData') {
-                let { reqRes, ...others } = this.editForm;
+            if (!this.activeReqResTable) {
+                this.proxyTreeList.unshift({
+                    reqTableData: [
+                        {
+                            index: 0,
+                            checked: true,
+                            desc: this.editForm.desc,
+                            req: this.editForm.req,
+                        },
+                    ],
+                    resTableData: [
+                        {
+                            index: 0,
+                            checked: true,
+                            desc: this.editForm.desc,
+                            res: this.editForm.res,
+                        },
+                    ],
+                })
+            } else if (this.activeReqResTable === 'reqTableData') {
                 if (this.isAdd) {
                     this.proxyTreeList[this.activeProxytreeIndex][this.activeReqResTable].splice(newRowIndex, 0, {
                         index: newRowIndex,
-                        req: reqRes,
-                        ...others,
+                        ...this.editForm,
                     });
                 } else {
                     this.proxyTreeList[this.activeProxytreeIndex][this.activeReqResTable][this.activeTableIndex] = {
-                        req: reqRes,
-                        ...others,
+                        index: this.activeTableIndex,
+                        ...this.editForm,
                     }
                 }
             } else {
@@ -295,12 +364,9 @@ const app = createApp({
                         targetTable.forEach(item => item.checked = false);
                     }
 
-                    let { reqRes, ...others } = this.editForm;
-
                     targetTable.splice(newRowIndex, 0, {
                         index: newRowIndex,
-                        res: reqRes,
-                        ...others,
+                        ...this.editForm,
                     });
                 } else {
                     // radio按键互斥
@@ -312,15 +378,12 @@ const app = createApp({
                         targetRow.checked = false;
                     }
 
-                    let { reqRes, checked, ...others } = this.editForm;
                     this.proxyTreeList[this.activeProxytreeIndex][this.activeReqResTable][this.activeTableIndex] = {
-                        checked: targetRow.checked,
-                        res: reqRes,
-                        ...others,
+                        index: this.activeTableIndex,
+                        ...this.editForm,
                     }
                 }
             }
-
             this.cancelForm();
         },
     },

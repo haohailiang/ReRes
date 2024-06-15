@@ -13,7 +13,11 @@
     <div id="app">
         <!-- 右上角按钮 -->
         <div class="button-group">
-            <el-button type="success">新增</el-button>
+            <el-button type="success" @click.stop="handleAdd({
+                proxyTreeIndex: '',
+                reqResTable: '',
+                tableIndex: '',
+            })">新增</el-button>
             <div class="import-box">
                 <el-button type="primary">导入</el-button>
                 <input class="file" type="file" id="jsonFile1" />
@@ -24,7 +28,11 @@
         <!-- 没数据时的模板 -->
         <div class="empty-box" v-if="proxyTreeList.length === 0">
             <el-empty description="暂无数据">
-                <el-button type="success">新增</el-button>
+                <el-button type="success" @click.stop="handleAdd({
+                    proxyTreeIndex: '',
+                    reqResTable: '',
+                    tableIndex: '',
+                })">新增</el-button>
                 <div class="import-box">
                     <el-button type="primary">导入</el-button>
                     <input class="file" type="file" id="jsonFile2" />
@@ -39,57 +47,68 @@
                 <el-divider content-position="left">{{ proxyTreeIndex + 1 }}. 请求</el-divider>
 
                 <!-- 请求表格 -->
-                <el-table :data="reqTableData" resizable border style="width: 100%" @row-click="rowData => handleRowClick(proxyTreeIndex, 'reqTableData', rowData)"
-                    :row-class-name="tableRowClassName.bind(this, proxyTreeIndex, 'reqTableData')">
-                    <el-table-column width="100" label="启用[多选]" align="center">
-                        <template #default="scope">
-                            <div class="checkbox-check" v-if="scope.row.checked">
-                                <el-icon>
-                                    <success-filled></success-filled>
-                                </el-icon>
-                            </div>
-                            <div class="checkbox-uncheck" v-else></div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="desc" label="描述" width="880">
-                        <template #default="scope">
-                            {{ scope.$index + 1 }}. {{ scope.row.desc }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="req" label="请求"></el-table-column>
-                    <el-table-column label="操作" width="240" align="center">
-                        <template #default="scope">
-                            <el-button type="primary" icon="Edit" circle @click.stop="handleEdit({
-                                proxyTreeIndex, 
-                                reqResTable: 'reqTableData',
-                                tableIndex: scope.$index,
-                                rowData: scope.row
-                            })"></el-button>
-                            <el-button v-if="scope.$index !== 0" icon="Top" circle @click.stop="handleMoveUp({
-                                proxyTreeIndex,
-                                reqResTable: 'reqTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                            <el-button v-else icon="Top" circle disabled></el-button>
-                            <el-button v-if="scope.$index !== reqTableData.length - 1" icon="Bottom" circle @click.stop="handleMoveDown({
-                                proxyTreeIndex,
-                                reqResTable: 'reqTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                            <el-button v-else icon="Bottom" circle disabled></el-button>
-                            <el-button type="danger" icon="Minus" circle @click.stop="handleDelete({
-                                proxyTreeIndex,
-                                reqResTable: 'reqTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                            <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
-                                proxyTreeIndex,
-                                reqResTable: 'reqTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                <template v-if="reqTableData.length > 0">
+                    <el-table :data="reqTableData" resizable border style="width: 100%" @row-click="rowData => handleRowClick(proxyTreeIndex, 'reqTableData', rowData)"
+                        :row-class-name="tableRowClassName.bind(this, proxyTreeIndex, 'reqTableData')">
+                        <el-table-column width="100" label="启用[多选]" align="center">
+                            <template #default="scope">
+                                <div class="checkbox-check" v-if="scope.row.checked">
+                                    <el-icon>
+                                        <success-filled></success-filled>
+                                    </el-icon>
+                                </div>
+                                <div class="checkbox-uncheck" v-else></div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="desc" label="描述" width="880">
+                            <template #default="scope">
+                                {{ scope.$index + 1 }}. {{ scope.row.desc }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="req" label="请求"></el-table-column>
+                        <el-table-column label="操作" width="240" align="center">
+                            <template #default="scope">
+                                <el-button type="primary" icon="Edit" circle @click.stop="handleEdit({
+                                    proxyTreeIndex, 
+                                    reqResTable: 'reqTableData',
+                                    tableIndex: scope.$index,
+                                    rowData: scope.row
+                                })"></el-button>
+                                <el-button v-if="scope.$index !== 0" icon="Top" circle @click.stop="handleMoveUp({
+                                    proxyTreeIndex,
+                                    reqResTable: 'reqTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                                <el-button v-else icon="Top" circle disabled></el-button>
+                                <el-button v-if="scope.$index !== reqTableData.length - 1" icon="Bottom" circle @click.stop="handleMoveDown({
+                                    proxyTreeIndex,
+                                    reqResTable: 'reqTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                                <el-button v-else icon="Bottom" circle disabled></el-button>
+                                <el-button type="danger" icon="Minus" circle @click.stop="handleDelete({
+                                    proxyTreeIndex,
+                                    reqResTable: 'reqTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                                <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
+                                    proxyTreeIndex,
+                                    reqResTable: 'reqTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+                <template v-else>
+                    <div class="table-add-box">
+                        <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
+                            proxyTreeIndex,
+                            reqResTable: 'reqTableData',
+                            tableIndex: -1,
+                        })"></el-button>
+                    </div>
+                </template>
                 <el-divider>
                     <el-icon>
                         <star-filled></star-filled>
@@ -97,86 +116,111 @@
                 </el-divider>
 
                 <!-- 响应表格 -->
-                <el-table :data="resTableData" resizable border style="width: 100%"  @row-click="rowData => handleRowClick(proxyTreeIndex, 'resTableData', rowData)"
-                :row-class-name="tableRowClassName.bind(this, proxyTreeIndex, 'resTableData')">
-                    <el-table-column width="100" label="启用[单选]" align="center">
-                        <template #default="scope">
-                            <div class="checkbox-check" v-if="scope.row.checked">
-                                <el-icon>
-                                    <success-filled></success-filled>
-                                </el-icon>
-                            </div>
-                            <div class="checkbox-uncheck" v-else></div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="desc" label="描述" width="880">
-                        <template #default="scope">
-                            {{ scope.$index + 1 }}. {{ scope.row.desc }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="res" label="响应"></el-table-column>
-                    <el-table-column label="操作" width="240" align="center">
-                        <template #default="scope">
-                            <el-button type="primary" icon="Edit" circle @click.stop="handleEdit({
-                                proxyTreeIndex,
-                                reqResTable: 'resTableData',
-                                tableIndex: scope.$index,
-                                rowData: scope.row
-                            })"></el-button>
-                            <el-button v-if="scope.$index !== 0" icon="Top" circle @click.stop="handleMoveUp({
-                                proxyTreeIndex,
-                                reqResTable: 'resTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                            <el-button v-else icon="Top" circle disabled></el-button>
-                            
-                            <el-button v-if="scope.$index !== resTableData.length - 1" icon="Bottom" circle @click.stop="handleMoveDown({
-                                proxyTreeIndex,
-                                reqResTable: 'resTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                            <el-button v-else icon="Bottom" circle disabled></el-button>
-                            <el-button type="danger" icon="Minus" circle @click.stop="handleDelete({
-                                proxyTreeIndex,
-                                reqResTable: 'resTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                            <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
-                                proxyTreeIndex,
-                                reqResTable: 'resTableData',
-                                tableIndex: scope.$index,
-                            })"></el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
-                <!-- 侧边弹窗 -->
-                <el-drawer v-model="sliderDialogVisible" title="" :with-header="false" :before-close="handleBeforeClose" direction="rtl">
-                    <h1>{{ isAdd ? '新增' : '编辑' }}</h1>
-                    <div class="demo-drawer__content">
-                        <el-form :model="editForm" label-position="top" :rules="rules" ref="editFormRef">
-                            <el-form-item label="是否启用">
-                                <el-radio-group v-model="editForm.checked">
-                                    <el-radio :value="true">启用</el-radio>
-                                    <el-radio :value="false">禁用</el-radio>
-                                </el-radio-group>
-                            </el-form-item>
-                            <el-form-item label="描述">
-                                <el-input v-model="editForm.desc" type="textarea" autosize></el-input>
-                            </el-form-item>
-                            <el-form-item label="请求/响应" prop="reqRes">
-                                <el-input v-model="editForm.reqRes" type="textarea" autosize></el-input>
-                            </el-form-item>
-                        </el-form>
-                        <div class="demo-drawer__footer">
-                            <el-button @click="cancelForm">取消</el-button>
-                            <el-button type="primary" @click="submitEditForm">提交</el-button>
-                        </div>
+                <template v-if="resTableData.length > 0">
+                    <el-table :data="resTableData" resizable border style="width: 100%"  @row-click="rowData => handleRowClick(proxyTreeIndex, 'resTableData', rowData)"
+                    :row-class-name="tableRowClassName.bind(this, proxyTreeIndex, 'resTableData')">
+                        <el-table-column width="100" label="启用[单选]" align="center">
+                            <template #default="scope">
+                                <div class="checkbox-check" v-if="scope.row.checked">
+                                    <el-icon>
+                                        <success-filled></success-filled>
+                                    </el-icon>
+                                </div>
+                                <div class="checkbox-uncheck" v-else></div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="desc" label="描述" width="880">
+                            <template #default="scope">
+                                {{ scope.$index + 1 }}. {{ scope.row.desc }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="res" label="响应"></el-table-column>
+                        <el-table-column label="操作" width="240" align="center">
+                            <template #default="scope">
+                                <el-button type="primary" icon="Edit" circle @click.stop="handleEdit({
+                                    proxyTreeIndex,
+                                    reqResTable: 'resTableData',
+                                    tableIndex: scope.$index,
+                                    rowData: scope.row
+                                })"></el-button>
+                                <el-button v-if="scope.$index !== 0" icon="Top" circle @click.stop="handleMoveUp({
+                                    proxyTreeIndex,
+                                    reqResTable: 'resTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                                <el-button v-else icon="Top" circle disabled></el-button>
+                                
+                                <el-button v-if="scope.$index !== resTableData.length - 1" icon="Bottom" circle @click.stop="handleMoveDown({
+                                    proxyTreeIndex,
+                                    reqResTable: 'resTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                                <el-button v-else icon="Bottom" circle disabled></el-button>
+                                <el-button type="danger" icon="Minus" circle @click.stop="handleDelete({
+                                    proxyTreeIndex,
+                                    reqResTable: 'resTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                                <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
+                                    proxyTreeIndex,
+                                    reqResTable: 'resTableData',
+                                    tableIndex: scope.$index,
+                                })"></el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+                <template v-else>
+                    <div class="table-add-box">
+                        <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
+                            proxyTreeIndex,
+                            reqResTable: 'resTableData',
+                            tableIndex: -1,
+                        })"></el-button>
                     </div>
-                </el-drawer>
+                </template>
             </div>
         </template>
 
+        <!-- 侧边弹窗 -->
+        <el-drawer v-model="sliderDialogVisible" title="" :with-header="false" :before-close="handleBeforeClose" direction="rtl">
+            <h1>{{ isAdd ? '新增' : '编辑' }}</h1>
+            <div class="demo-drawer__content">
+                <el-form :model="editForm" label-position="top" :rules="rules" ref="editFormRef">
+                    <el-form-item label="是否启用">
+                        <el-radio-group v-model="editForm.checked">
+                            <el-radio :value="true">启用</el-radio>
+                            <el-radio :value="false">禁用</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="描述">
+                        <el-input v-model="editForm.desc" type="textarea" autosize placeholder="请输入描述信息"></el-input>
+                    </el-form-item>
+                    <template v-if="!activeReqResTable">
+                        <el-form-item label="请求" prop="req">
+                            <el-input v-model="editForm.req" type="textarea" autosize placeholder="请输入请求URL"></el-input>
+                        </el-form-item>
+                        <el-form-item label="响应" prop="res">
+                            <el-input v-model="editForm.res" type="textarea" autosize placeholder="请输入响应URL"></el-input>
+                        </el-form-item>
+                    </template>
+                    <template v-else-if="activeReqResTable === 'reqTableData'">
+                        <el-form-item label="请求" prop="req">
+                            <el-input v-model="editForm.req" type="textarea" autosize placeholder="请输入请求URL"></el-input>
+                        </el-form-item>
+                    </template>
+                    <template v-else>
+                        <el-form-item label="响应" prop="res">
+                            <el-input v-model="editForm.res" type="textarea" autosize placeholder="请输入响应URL"></el-input>
+                        </el-form-item>
+                    </template>
+                </el-form>
+                <div class="demo-drawer__footer">
+                    <el-button @click="cancelForm">取消</el-button>
+                    <el-button type="primary" @click="submitEditForm">提交</el-button>
+                </div>
+            </div>
+        </el-drawer>
     </div>
 
     <script src="./lib/vue-3.4.28.global.prod.js"></script>
