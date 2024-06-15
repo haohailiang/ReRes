@@ -211,6 +211,10 @@ const app = createApp({
             bg.localStorage.ReResMap = JSON.stringify(result);
             bg.localStorage.ReResMapFormat = JSON.stringify(this.proxyTreeList);
         },
+        handleDeleteAll() {
+            this.proxyTreeList = [];
+            this.saveData();
+        },
         handleImport(evt) {
             let resultFile = evt.target.files[0];
             if (resultFile) {

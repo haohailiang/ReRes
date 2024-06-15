@@ -13,16 +13,17 @@
     <div id="app">
         <!-- 右上角按钮 -->
         <div class="button-group">
+            <el-button type="danger" @click="handleDeleteAll">清空</el-button>
             <el-button type="success" @click.stop="handleAdd({
                 proxyTreeIndex: '',
                 reqResTable: '',
                 tableIndex: '',
             })">新增</el-button>
+            <el-button @click="handleExport">导出</el-button>
             <div class="import-box">
                 <el-button type="primary">导入</el-button>
                 <input class="file" type="file" id="jsonFile1" />
             </div>
-            <el-button @click="handleExport">导出</el-button>
         </div>
 
         <!-- 没数据时的模板 -->
@@ -141,7 +142,7 @@
                                 <el-table-column prop="res" label="响应"></el-table-column>
                                 <el-table-column label="操作" width="240" align="center">
                                     <template #default="scope">
-                                        <el-button type="primary" icon="Edit" circle @click.stop="handleEdit({
+                                        <el-button type="success" icon="Edit" circle @click.stop="handleEdit({
                                             proxyTreeIndex,
                                             reqResTable: 'resTableData',
                                             tableIndex: scope.$index,
@@ -166,7 +167,7 @@
                                             reqResTable: 'resTableData',
                                             tableIndex: scope.$index,
                                         })"></el-button>
-                                        <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
+                                        <el-button type="success" icon="Plus" circle @click.stop="handleAdd({
                                             proxyTreeIndex,
                                             reqResTable: 'resTableData',
                                             tableIndex: scope.$index,
@@ -177,7 +178,7 @@
                         </template>
                         <template v-else>
                             <div class="table-add-box">
-                                <el-button type="primary" icon="Plus" circle @click.stop="handleAdd({
+                                <el-button type="success" icon="Plus" circle @click.stop="handleAdd({
                                     proxyTreeIndex,
                                     reqResTable: 'resTableData',
                                     tableIndex: -1,

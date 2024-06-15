@@ -8,19 +8,19 @@ body {
     height: 100%;
 }
 
-#app .button-group {
+.button-group {
     display: flex;
-    gap: 12px;
     justify-content: end;
     box-sizing: border-box;
     padding: 8px 16px;
 }
 
-#app .button-group .import-box {
+.button-group .import-box {
     position: relative;
+    margin-left: 12px;
 }
 
-#app .button-group .import-box .file {
+.button-group .import-box .file {
     position: absolute;
     left: 0;
     top: 0;
@@ -29,7 +29,7 @@ body {
     opacity: 0;
 }
 
-#app .empty-box {
+.empty-box {
     margin-top: -48px;
     height: 100%;
     display: flex;
@@ -37,15 +37,15 @@ body {
     align-items: center;
 }
 
-#app .empty-box .el-empty__bottom {
+.empty-box .el-empty__bottom {
     display: flex;
     gap: 12px;
 }
 
-#app .empty-box .import-box {
+.empty-box .import-box {
     position: relative;
 }
-#app .empty-box .file {
+.empty-box .file {
     position: absolute;
     left: 0;
     top: 0;
@@ -53,16 +53,16 @@ body {
     bottom: 0;
     opacity: 0;
 }
-#app .rule-list-item {
+.rule-list-item {
     border-left: 4px solid rgb(144, 147, 153);
     border-right: 4px solid #909399;
     display: flex;
     margin: 0 12px;
 }
-#app .rule-list-item:nth-child(odd) {
+.rule-list-item:nth-child(odd) {
     border-color: rgb(230, 162, 60);
 }
-#app .rule-list-item .req-url {
+.rule-list-item .req-url {
     padding-bottom: 20px;
 }
 
@@ -76,7 +76,7 @@ body {
     background-color: rgba(144, 147, 153, 0.1);
 }
 
-#app .rule-list-item:nth-child(odd) .req-no {
+.rule-list-item:nth-child(odd) .req-no {
     background-color: #fff;
 }
 
@@ -92,7 +92,7 @@ body {
     background-color: transparent;
 }
 
-#app .checkbox-uncheck {
+.checkbox-uncheck {
     width: 20px;
     height: 20px;
     box-sizing: border-box;
@@ -102,7 +102,7 @@ body {
     cursor: pointer;
 }
 
-#app .checkbox-check {
+.checkbox-check {
     color: #409eff;
     display: flex;
     justify-content: center;
@@ -111,17 +111,22 @@ body {
     font-size: 22px;
 }
 
-#app .el-drawer__body {
+.res-area-box .checkbox-check {
+    color: #67c23a;
+    border-color: #67c23a;
+}
+
+.el-drawer__body {
     padding-top: 0;
 }
 
-#app .el-table .success-row {
+.el-table .success-row {
     --el-table-tr-bg-color: var(--el-color-success-light-9);
 }
 
 .table-add-box {
     text-align: right;
-    padding-right: 12px;
+    padding: 8px 15px;
 }
 
 .req-area-box,
@@ -135,5 +140,4 @@ body {
 }
 .res-area-box {
     border-color: #67c23a;
-    /* background-color: rgba(103, 194, 58, 0.1); */
 }
