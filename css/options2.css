@@ -121,7 +121,7 @@ body {
 }
 
 .el-table .success-row {
-    --el-table-tr-bg-color: var(--el-color-success-light-9);
+    background-color: var(--el-color-success-light-9);
 }
 
 .table-add-box {

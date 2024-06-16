@@ -80,18 +80,10 @@ const app = createApp({
     },
     mounted() {
         document.getElementById('jsonFile1').onchange = this.handleImport;
-        if (this.proxyTreeList.length === 0) {
-            document.getElementById('jsonFile2').addEventListener('change', this.handleImport);
-        }
     },
     watch: {
         proxyTreeList: {
             handler(newVal) {
-                if (newVal.length === 0) {
-                    document.getElementById('jsonFile2').addEventListener('change', this.handleImport);
-                } else {
-                    document.getElementById('jsonFile2')?.removeEventListener('change', this.handleImport);
-                }
                 this.saveData();
             },
             deep: true
@@ -139,6 +131,9 @@ const app = createApp({
             for (let pi = 0; pi < this.proxyTreeList.length; pi++) {
                 if (rule.field === 'req') {
                     for (let ti = 0; ti < this.proxyTreeList[pi].reqTableData.length; ti++) {
+                        if (pi === this.activeProxytreeIndex && ti === this.activeTableIndex && !this.isAdd) {
+                            continue;
+                        }
                         if (this.proxyTreeList[pi].reqTableData[ti].req === value) {
                             callback(new Error(`存在重复的请求路径: ${value}`));
                             return;
@@ -146,6 +141,9 @@ const app = createApp({
                     }
                 } else {
                     for (let ti = 0; ti < this.proxyTreeList[pi].resTableData.length; ti++) {
+                        if (pi === this.activeProxytreeIndex && ti === this.activeTableIndex && !this.isAdd) {
+                            continue;
+                        }
                         if (this.proxyTreeList[pi].resTableData[ti].res === value) {
                             callback(new Error(`存在重复的响应路径: ${value}`));
                             return;
